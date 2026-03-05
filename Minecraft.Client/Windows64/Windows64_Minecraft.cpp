@@ -1569,19 +1569,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		}
 
 #ifdef _DEBUG_MENUS_ENABLED
-		// F4 Open debug overlay
-        if (g_KBMInput.IsKeyPressed(VK_F4))
-        {
-            if (Minecraft *pMinecraft = Minecraft::GetInstance())
-            {
-                if (pMinecraft->options &&
-                    app.GetGameStarted() && !ui.GetMenuDisplayed(0) && pMinecraft->screen == NULL)
-                {
-                    ui.NavigateToScene(0, eUIScene_DebugOverlay, NULL, eUILayer_Debug);
-                }
-            }
-        }
-
         // F6 Open debug console
         if (g_KBMInput.IsKeyPressed(VK_F6))
         {
