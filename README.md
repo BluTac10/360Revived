@@ -1,19 +1,19 @@
 ![Legacy Edition Banner](.github/banner.png)
-# MinecraftConsoles (Legacy Console Edition)
+# 360Revived (Legacy Console Edition)
 
-[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/jrum7HhegA)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/T9CCMGx9ff)
 
-This project is based on source code of Minecraft Legacy Console Edition v1.6.0560.0 (TU19) with some fixes and improvements applied. 
+This project is based on source code of [smartcmd/MinecraftConsoles](https://github.com/smartcmd/MinecraftConsoles). 
 
-The current goal of MinecraftConsoles is to be a multi-platform base for further development, such as modding, backports, and anything else LCE. On top of that, we're working to make this a quality experience on Desktop with or without a controller while (long-term) retaining console support. 
+The current goal of 360Revived is to be a pc port of Xbox 360 Edition TU19. 
 
-See our our [Contributor's Guide](./CONTRIBUTING.md) for more information on the goals of this project.
+Join our [Discord](https://discord.gg/T9CCMGx9ff) for more information on the goals of this project.
 
 ## Download
 ### Client
-Windows users can download our [Nightly Build](https://github.com/smartcmd/MinecraftConsoles/releases/tag/nightly)! Simply download the `.zip` file and extract it to a folder where you'd like to keep the game. You can set your username in `username.txt` (you'll have to make this file)
+Windows users can download our [Nightly Build](https://github.com/BluTac10/360Revived/releases/tag/nightly)! Simply download the `.zip` file and extract it to a folder where you'd like to keep the game. You can set your username in `username.txt` (you'll have to make this file)
 ### Server
-If you're looking for Dedicated Server software, download its [Nightly Build here](https://github.com/smartcmd/MinecraftConsoles/releases/tag/nightly-dedicated-server). Similar instructions to the client more or less, though see further down in this README for more info on that.
+If you're looking for Dedicated Server software, download its [Nightly Build here](https://github.com/BluTac10/360Revived/releases/tag/nightly-dedicated-server). Similar instructions to the client more or less, though see further down in this README for more info on that.
 
 ## Platform Support
 
