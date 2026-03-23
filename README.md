@@ -1,4 +1,5 @@
-![Legacy Edition Banner](.github/banner.png)
+<img width="1240" height="443" alt="Xbox_360_Edition_Custom" src="https://github.com/user-attachments/assets/1fb46e42-882f-40f7-b8fc-657a6e775d50" />
+
 # 360Revived (Legacy Console Edition)
 
 [![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/T9CCMGx9ff)
