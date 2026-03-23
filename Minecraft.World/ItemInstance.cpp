@@ -615,7 +615,7 @@ vector<HtmlString> *ItemInstance::getHoverText(shared_ptr<Player> player, bool a
 
 		if (tag->contains(L"display"))
 		{
-			//CompoundTag *display = tag->getCompound(L"display");
+			CompoundTag *display = tag->getCompound(L"display");
 
 			//if (display->contains(L"color"))
 			//{
@@ -631,8 +631,7 @@ vector<HtmlString> *ItemInstance::getHoverText(shared_ptr<Player> player, bool a
 			//	}
 			//}
 
-			// 4J: Lore isn't in use in game
-			/*if (display->contains(L"Lore"))
+			if (display->contains(L"Lore"))
 			{
 				ListTag<StringTag> *lore = (ListTag<StringTag> *) display->getList(L"Lore");
 				if (lore->size() > 0)
@@ -643,7 +642,7 @@ vector<HtmlString> *ItemInstance::getHoverText(shared_ptr<Player> player, bool a
 						lines->push_back(lore->get(i)->data);
 					}
 				}
-			}*/
+			}
 		}
 	}
 

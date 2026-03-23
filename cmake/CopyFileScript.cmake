@@ -3,6 +3,7 @@
 # Required:
 #   COPY_SOURCE – pipe-separated list of source file paths
 #   COPY_DEST  – destination directory
+cmake_minimum_required(VERSION 3.24)
 
 if(NOT COPY_SOURCE OR NOT COPY_DEST)
   message(FATAL_ERROR "COPY_SOURCE and COPY_DEST must be set.")
