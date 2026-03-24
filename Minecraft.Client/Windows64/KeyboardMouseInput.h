@@ -56,6 +56,8 @@ public:
 	bool IsKeyPressed(int vkCode) const;
 	bool IsKeyReleased(int vkCode) const;
 
+	int GetPressedKey() const;
+
 	bool IsMouseButtonDown(int button) const;
 	bool IsMouseButtonPressed(int button) const;
 	bool IsMouseButtonReleased(int button) const;

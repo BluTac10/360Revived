@@ -234,6 +234,13 @@ bool KeyboardMouseInput::IsKeyReleased(int vkCode) const
 	return false;
 }
 
+int KeyboardMouseInput::GetPressedKey() const
+{
+	for (int i = 0; i < MAX_KEYS; ++i)
+		if (m_keyPressed[i]) return i;
+	return 0;
+}
+
 bool KeyboardMouseInput::IsMouseButtonDown(int button) const
 {
 	if (button >= 0 && button < MAX_MOUSE_BUTTONS)

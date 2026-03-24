@@ -4,6 +4,7 @@
 #include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
 #include "..\..\..\Minecraft.World\net.minecraft.network.packet.h"
 #include "..\..\Minecraft.h"
+#include "..\..\Options.h"
 #include "..\..\MultiPlayerLocalPlayer.h"
 #include "..\..\ClientConnection.h"
 #include "IUIScene_TradingMenu.h"
@@ -368,7 +369,13 @@ void IUIScene_TradingMenu::setTradeItem(int index, shared_ptr<ItemInstance> item
 
 vector<HtmlString> *IUIScene_TradingMenu::GetItemDescription(shared_ptr<ItemInstance> item)
 {
-	vector<HtmlString> *lines = item->getHoverText(nullptr, false);
+	bool advanced = false;
+	if (const Minecraft* pMinecraft = Minecraft::GetInstance())
+	{
+		if (pMinecraft->options)
+			advanced = pMinecraft->options->advancedTooltips;
+	}
+	vector<HtmlString> *lines = item->getHoverText(nullptr, advanced);
 
 	// Add rarity to first line
 	if (lines->size() > 0)

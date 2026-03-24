@@ -170,6 +170,7 @@ void Options::init()
 	particles = 0;
 	fov = 0;
 	gamma = 0;
+	advancedTooltips = false;
 }
 
 Options::Options(Minecraft *minecraft, File workingDirectory)
@@ -451,8 +452,9 @@ void Options::load()
                 if (cmds[0] == L"fancyGraphics") fancyGraphics = cmds[1]==L"true";
                 if (cmds[0] == L"ao") ambientOcclusion = cmds[1]==L"true";
 				if (cmds[0] == L"clouds") renderClouds = cmds[1]==L"true";
-                if (cmds[0] == L"skin") skin = cmds[1];
-                if (cmds[0] == L"lastServer") lastMpIp = cmds[1];
+				if (cmds[0] == L"advancedTooltips") advancedTooltips = cmds[1]==L"false";
+				if (cmds[0] == L"skin") skin = cmds[1];
+				if (cmds[0] == L"lastServer") lastMpIp = cmds[1];
 
                 for (int i = 0; i < keyMappings_length; i++)
 				{
@@ -508,7 +510,8 @@ void Options::save()
         dos.writeChars(L"fancyGraphics:" + wstring(fancyGraphics ? L"true" : L"false"));
         dos.writeChars(ambientOcclusion ? L"ao:true" : L"ao:false");
 		dos.writeChars(renderClouds ? L"clouds:true" : L"clouds:false");
-        dos.writeChars(L"skin:" + skin);
+		dos.writeChars(advancedTooltips ? L"advancedTooltips:true" : L"advancedTooltips:false");
+		dos.writeChars(L"skin:" + skin);
         dos.writeChars(L"lastServer:" + lastMpIp);
 
         for (int i = 0; i < keyMappings_length; i++)

@@ -36,6 +36,7 @@
 //#include "NetworkManager.h"
 #include "..\..\Minecraft.Client\Tesselator.h"
 #include "..\..\Minecraft.Client\Options.h"
+#include "..\Gui.h"
 #include "Sentient\SentientManager.h"
 #include "..\..\Minecraft.World\IntCache.h"
 #include "..\Textures.h"
@@ -107,6 +108,7 @@ int g_iScreenHeight = 1080;
 // always matches the current window, even after a resize.
 int g_rScreenWidth = 1920;
 int g_rScreenHeight = 1080;
+static bool f3ComboUsed = false;
 
 float g_iAspectRatio = static_cast<float>(g_iScreenWidth) / g_iScreenHeight;
 static bool g_bResizeReady = false;
@@ -1774,16 +1776,36 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		}
 
 		// F3 toggles onscreen debug info
-		if (g_KBMInput.IsKeyPressed(KeyboardMouseInput::KEY_DEBUG_INFO))
+		if (g_KBMInput.IsKeyPressed(KeyboardMouseInput::KEY_DEBUG_INFO)) f3ComboUsed = false;
+
+		// f3 combo
+		if (g_KBMInput.IsKeyDown(KeyboardMouseInput::KEY_DEBUG_INFO))
 		{
-			if (const Minecraft* pMinecraft = Minecraft::GetInstance())
+			switch (g_KBMInput.GetPressedKey())
 			{
-				if (pMinecraft->options)
-				{
-					pMinecraft->options->renderDebug = !pMinecraft->options->renderDebug;
-				}
+				// advanced tooltips
+				case 'H':
+					if (pMinecraft->options && app.GetGameStarted())
+					{
+						pMinecraft->options->advancedTooltips = !pMinecraft->options->advancedTooltips;
+						pMinecraft->options->save();
+
+						const wstring msg = wstring(L"Advanced tooltips: ") + (pMinecraft->options->advancedTooltips ? L"shown" : L"hidden");
+						const int primaryPad = ProfileManager.GetPrimaryPad();
+						if (pMinecraft->gui) pMinecraft->gui->addMessage(msg, primaryPad);
+
+						f3ComboUsed = true;
+					}
+					break;
 			}
 		}
+
+		// no combo
+		if (g_KBMInput.IsKeyReleased(KeyboardMouseInput::KEY_DEBUG_INFO) && !f3ComboUsed)
+			if (pMinecraft->options)
+				pMinecraft->options->renderDebug = !pMinecraft->options->renderDebug;
+
+
 
 #ifdef _DEBUG_MENUS_ENABLED
         // F6 Open debug console

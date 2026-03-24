@@ -4036,6 +4036,8 @@ void ClientConnection::handleSetPlayerTeamPacket(shared_ptr<SetPlayerTeamPacket>
 
 void ClientConnection::handleParticleEvent(shared_ptr<LevelParticlesPacket> packet)
 {
+    ePARTICLE_TYPE particleId = (ePARTICLE_TYPE)Integer::parseInt(packet->getName());
+
 	for (int i = 0; i < packet->getCount(); i++)
 	{
 		double xVarience = random->nextGaussian() * packet->getXDist();
@@ -4044,10 +4046,6 @@ void ClientConnection::handleParticleEvent(shared_ptr<LevelParticlesPacket> pack
 		double xa = random->nextGaussian() * packet->getMaxSpeed();
 		double ya = random->nextGaussian() * packet->getMaxSpeed();
 		double za = random->nextGaussian() * packet->getMaxSpeed();
-
-		// TODO: determine particle ID from name
-		assert(0);
-		ePARTICLE_TYPE particleId = eParticleType_heart;
 
 		level->addParticle(particleId, packet->getX() + xVarience, packet->getY() + yVarience, packet->getZ() + zVarience, xa, ya, za);
 	}
