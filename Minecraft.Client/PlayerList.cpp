@@ -1690,16 +1690,7 @@ bool PlayerList::isXuidBanned(PlayerUID xuid)
 }
 
 // AP added for Vita so the range can be increased once the level starts
-void PlayerList::setViewDistance(const int newViewDistance)
+void PlayerList::setViewDistance(int newViewDistance)
 {
 	viewDistance = newViewDistance;
-
-	for (size_t i = 0; i < server->levels.length; i++)
-	{
-		ServerLevel* level = server->levels[i];
-		if (level != nullptr)
-		{
-			level->getChunkMap()->setRadius(newViewDistance);
-		}
-	}
 }
