@@ -21,6 +21,8 @@
 
 class Socket;
 
+#include "..\..\..\Minecraft.World\DisconnectPacket.h"
+
 #pragma pack(push, 1)
 struct Win64LANBroadcast
 {
@@ -69,6 +71,23 @@ public:
 	static bool HostGame(int port, const char* bindIp = nullptr);
 	static bool JoinGame(const char* ip, int port);
 
+	enum eJoinState
+	{
+		eJoinState_Idle,
+		eJoinState_Connecting,
+		eJoinState_Success,
+		eJoinState_Failed,
+		eJoinState_Rejected,
+		eJoinState_Cancelled
+	};
+	static bool BeginJoinGame(const char* ip, int port);
+	static void CancelJoinGame();
+	static eJoinState GetJoinState();
+	static int GetJoinAttempt();
+	static int GetJoinMaxAttempts();
+	static DisconnectPacket::eDisconnectReason GetJoinRejectReason();
+	static bool FinalizeJoin();
+
 	static bool SendToSmallId(BYTE targetSmallId, const void* data, int dataSize);
 	static bool SendOnSocket(SOCKET sock, const void* data, int dataSize);
 
@@ -112,6 +131,17 @@ private:
 	static DWORD WINAPI SplitScreenRecvThreadProc(LPVOID param);
 	static DWORD WINAPI AdvertiseThreadProc(LPVOID param);
 	static DWORD WINAPI DiscoveryThreadProc(LPVOID param);
+	static DWORD WINAPI JoinThreadProc(LPVOID param);
+
+	static HANDLE s_joinThread;
+	static volatile eJoinState s_joinState;
+	static volatile int s_joinAttempt;
+	static volatile bool s_joinCancel;
+	static char s_joinIP[256];
+	static int s_joinPort;
+	static BYTE s_joinAssignedSmallId;
+	static DisconnectPacket::eDisconnectReason s_joinRejectReason;
+	static const int JOIN_MAX_ATTEMPTS = 4;
 
 	static SOCKET s_listenSocket;
 	static SOCKET s_hostConnectionSocket;

@@ -653,12 +653,14 @@ shared_ptr<Packet> TrackedEntity::getAddEntityPacket()
 
 		PlayerUID xuid = INVALID_XUID;
 		PlayerUID OnlineXuid = INVALID_XUID;
-		// do not pass xuid/onlinxuid to cleints
-		//if( player != nullptr )
-		//{
-		//	xuid = player->getXuid();
-		//	OnlineXuid = player->getOnlineXuid();
-		//}
+		// do not pass xuid/onlinexuid to clients if dedicated server
+#ifndef MINECRAFT_SERVER_BUILD
+		if( player != nullptr )
+		{
+			xuid = player->getXuid();
+			OnlineXuid = player->getOnlineXuid();
+		}
+#endif
 		// 4J Added yHeadRotp param to fix #102563 - TU12: Content: Gameplay: When one of the Players is idle for a few minutes his head turns 180 degrees.
 		return std::make_shared<AddPlayerPacket>(player, xuid, OnlineXuid, xp, yp, zp, yRotp, xRotp, yHeadRotp);
 	}

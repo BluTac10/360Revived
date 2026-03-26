@@ -77,6 +77,12 @@ private:
 	bool			m_bIsPrivateGame;
 	int				m_flagIndexSize;
 
+#ifdef _WINDOWS64
+	bool			m_bJoinPending;
+	int				m_joinLocalUsersMask;
+	wchar_t			m_joinHostName[32];
+#endif
+
 	// This is only maintained by the host, and is not valid on client machines
 	GameSessionData m_hostGameSessionData;
 	CGameNetworkManager *m_pGameNetworkManager;

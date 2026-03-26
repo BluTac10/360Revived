@@ -583,6 +583,24 @@ void UIScene_JoinMenu::JoinGame(UIScene_JoinMenu* pClass)
 		// Alert the app the we no longer want to be informed of ethernet connections
 		app.SetLiveLinkRequired( false );
 
+#ifdef _WINDOWS64
+		if (result == CGameNetworkManager::JOINGAME_PENDING)
+		{
+			pClass->m_bIgnoreInput = false;
+
+			ConnectionProgressParams *param = new ConnectionProgressParams();
+			param->iPad = ProfileManager.GetPrimaryPad();
+			param->stringId = -1;
+			param->showTooltips = true;
+			param->setFailTimer = false;
+			param->timerTime = 0;
+			param->cancelFunc = nullptr;
+			param->cancelFuncParam = nullptr;
+			ui.NavigateToScene(ProfileManager.GetPrimaryPad(), eUIScene_ConnectingProgress, param);
+			return;
+		}
+#endif
+
 		if( result != CGameNetworkManager::JOINGAME_SUCCESS )
 		{
 			int exitReasonStringId = -1;

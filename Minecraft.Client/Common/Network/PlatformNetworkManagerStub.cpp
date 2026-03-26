@@ -173,6 +173,11 @@ bool CPlatformNetworkManagerStub::Initialise(CGameNetworkManager *pGameNetworkMa
 	m_bSearchPending = false;
 
 	m_bIsOfflineGame = false;
+#ifdef _WINDOWS64
+	m_bJoinPending = false;
+	m_joinLocalUsersMask = 0;
+	m_joinHostName[0] = 0;
+#endif
 	m_pSearchParam = nullptr;
 	m_SessionsUpdatedCallback = nullptr;
 
@@ -280,6 +285,38 @@ void CPlatformNetworkManagerStub::DoWork()
 		else
 		{
 			m_bLeaveGameOnTick = false;
+		}
+	}
+
+	if (m_bJoinPending)
+	{
+		WinsockNetLayer::eJoinState state = WinsockNetLayer::GetJoinState();
+		if (state == WinsockNetLayer::eJoinState_Success)
+		{
+			WinsockNetLayer::FinalizeJoin();
+
+			BYTE localSmallId = WinsockNetLayer::GetLocalSmallId();
+
+			IQNet::m_player[localSmallId].m_smallId = localSmallId;
+			IQNet::m_player[localSmallId].m_isRemote = false;
+			IQNet::m_player[localSmallId].m_isHostPlayer = false;
+			IQNet::m_player[localSmallId].m_resolvedXuid = Win64Xuid::ResolvePersistentXuid();
+
+			Minecraft* pMinecraft = Minecraft::GetInstance();
+			wcscpy_s(IQNet::m_player[localSmallId].m_gamertag, 32, pMinecraft->user->name.c_str());
+			IQNet::s_playerCount = localSmallId + 1;
+
+			NotifyPlayerJoined(&IQNet::m_player[0]);
+			NotifyPlayerJoined(&IQNet::m_player[localSmallId]);
+
+			m_pGameNetworkManager->StateChange_AnyToStarting();
+			m_bJoinPending = false;
+		}
+		else if (state == WinsockNetLayer::eJoinState_Failed ||
+				 state == WinsockNetLayer::eJoinState_Rejected ||
+				 state == WinsockNetLayer::eJoinState_Cancelled)
+		{
+			m_bJoinPending = false;
 		}
 	}
 #endif
@@ -511,36 +548,22 @@ int CPlatformNetworkManagerStub::JoinGame(FriendSessionInfo* searchResult, int l
 	IQNet::m_player[0].m_smallId = 0;
 	IQNet::m_player[0].m_isRemote = true;
 	IQNet::m_player[0].m_isHostPlayer = true;
-	// Remote host still maps to legacy host XUID in mixed old/new sessions.
 	IQNet::m_player[0].m_resolvedXuid = Win64Xuid::GetLegacyEmbeddedHostXuid();
 	wcsncpy_s(IQNet::m_player[0].m_gamertag, 32, searchResult->data.hostName, _TRUNCATE);
 
 	WinsockNetLayer::StopDiscovery();
 
-	if (!WinsockNetLayer::JoinGame(hostIP, hostPort))
+	wcsncpy_s(m_joinHostName, 32, searchResult->data.hostName, _TRUNCATE);
+	m_joinLocalUsersMask = localUsersMask;
+
+	if (!WinsockNetLayer::BeginJoinGame(hostIP, hostPort))
 	{
 		app.DebugPrintf("Win64 LAN: Failed to connect to %s:%d\n", hostIP, hostPort);
 		return CGameNetworkManager::JOINGAME_FAIL_GENERAL;
 	}
 
-	BYTE localSmallId = WinsockNetLayer::GetLocalSmallId();
-
-	IQNet::m_player[localSmallId].m_smallId = localSmallId;
-	IQNet::m_player[localSmallId].m_isRemote = false;
-	IQNet::m_player[localSmallId].m_isHostPlayer = false;
-	// Local non-host identity is the persistent uid.dat XUID.
-	IQNet::m_player[localSmallId].m_resolvedXuid = Win64Xuid::ResolvePersistentXuid();
-
-	Minecraft* pMinecraft = Minecraft::GetInstance();
-	wcscpy_s(IQNet::m_player[localSmallId].m_gamertag, 32, pMinecraft->user->name.c_str());
-	IQNet::s_playerCount = localSmallId + 1;
-
-	NotifyPlayerJoined(&IQNet::m_player[0]);
-	NotifyPlayerJoined(&IQNet::m_player[localSmallId]);
-
-	m_pGameNetworkManager->StateChange_AnyToStarting();
-
-	return CGameNetworkManager::JOINGAME_SUCCESS;
+	m_bJoinPending = true;
+	return CGameNetworkManager::JOINGAME_PENDING;
 #else
 	return CGameNetworkManager::JOINGAME_SUCCESS;
 #endif
