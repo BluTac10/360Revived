@@ -218,10 +218,12 @@ bool PistonBaseTile::triggerEvent(Level *level, int x, int y, int z, int param1,
 		if (extend && param1 == TRIGGER_CONTRACT)
 		{
 			level->setData(x, y, z, facing | EXTENDED_BIT, UPDATE_CLIENTS);
+			ignoreUpdate(false);
 			return false;
 		}
 		else if (!extend && param1 == TRIGGER_EXTEND)
 		{
+			ignoreUpdate(false);
 			return false;
 		}
 	}
@@ -247,6 +249,7 @@ bool PistonBaseTile::triggerEvent(Level *level, int x, int y, int z, int param1,
 		}
 		else
 		{
+			ignoreUpdate(false);
 			return false;
 		}
 		PIXEndNamedEvent();

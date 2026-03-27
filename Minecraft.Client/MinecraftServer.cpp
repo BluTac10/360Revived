@@ -1795,6 +1795,7 @@ void MinecraftServer::run(int64_t seed, void *lpParameter)
 
                         chunkPacketManagement_PostTick();
                     }
+                    lastTime = getCurrentTimeMillis();
                     //					int64_t afterall = System::currentTimeMillis();
                     //					PIXReportCounter(L"Server time all",(float)(afterall-beforeall));
                     //					PIXReportCounter(L"Server ticks",(float)tickcount);

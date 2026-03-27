@@ -678,7 +678,7 @@ bool ServerLevel::tickPendingTicks(bool force)
 		}
 		else
 		{
-			addToTickNextTick(td.x, td.y, td.z, td.tileId, 0);
+			forceAddTileTick(td.x, td.y, td.z, td.tileId, 0, td.priorityTilt);
 		}
 	}
 

@@ -20,7 +20,7 @@ If you're looking for Dedicated Server software, download its [Nightly Build her
 
 - **Windows**: Supported for building and running the project
 - **macOS / Linux**: The Windows nightly build will run through Wine or CrossOver based on community reports, but this is unofficial and not currently tested by the maintainers when pushing updates
-- **Android**: The Windows nightly build does run but has stability / frametime pacing issues frequently reported
+- **Android**: VIA x86 EMULATORS (like GameNative) ONLY! The Windows nightly build does run but has stability / frametime pacing issues frequently reported
 - **iOS**: No current support
 - **All Consoles**: Console support remains in the code, but maintainers are not currently verifying console functionality / porting UI Changes to the console builds at this time.
 
