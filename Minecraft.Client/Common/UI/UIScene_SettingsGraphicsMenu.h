@@ -18,15 +18,16 @@ private:
 		eControl_InterfaceOpacity
 	};
 
+	// Remove render distance and FOV Options - Not present in xbox 360 edition
 	UIControl_CheckBox m_checkboxClouds, m_checkboxBedrockFog, m_checkboxCustomSkinAnim; // Checkboxes
 	UIControl_Slider m_sliderRenderDistance, m_sliderGamma, m_sliderFOV, m_sliderInterfaceOpacity; // Sliders
 	UI_BEGIN_MAP_ELEMENTS_AND_NAMES(UIScene)
 		UI_MAP_ELEMENT( m_checkboxClouds, "Clouds")
 		UI_MAP_ELEMENT( m_checkboxBedrockFog, "BedrockFog")
 		UI_MAP_ELEMENT( m_checkboxCustomSkinAnim, "CustomSkinAnim")
-		UI_MAP_ELEMENT( m_sliderRenderDistance, "RenderDistance")
+		//UI_MAP_ELEMENT( m_sliderRenderDistance, "RenderDistance")
 		UI_MAP_ELEMENT( m_sliderGamma, "Gamma")
-		UI_MAP_ELEMENT(m_sliderFOV, "FOV")
+		//UI_MAP_ELEMENT(m_sliderFOV, "FOV")
 		UI_MAP_ELEMENT( m_sliderInterfaceOpacity, "InterfaceOpacity")
 	UI_END_MAP_ELEMENTS_AND_NAMES()
 

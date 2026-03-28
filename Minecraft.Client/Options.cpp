@@ -112,7 +112,7 @@ void Options::init()
     sound = 1;
     sensitivity = 0.5f;
     invertYMouse = false;
-    viewDistance = 0;
+//    viewDistance = 0;
     bobView = true;
     anaglyph3d = false;
     advancedOpengl = false;
@@ -168,7 +168,7 @@ void Options::init()
 	cameraSpeed = 1;
 	guiScale = 0;
 	particles = 0;
-	fov = 0;
+//	fov = 0;
 	gamma = 0;
 	advancedTooltips = false;
 }
@@ -233,7 +233,7 @@ void Options::set(const Options::Option *item, float fVal)
     }
 	if (item == Option::FOV)
 	{
-		fov = fVal;
+//		fov = fVal;
 	}
 	if (item == Option::GAMMA)
 	{
@@ -241,14 +241,14 @@ void Options::set(const Options::Option *item, float fVal)
 	}
 	if (item == Option::RENDER_DISTANCE)
 	{
-		viewDistance = fVal;
+//		viewDistance = fVal;
 	}
 }
 
 void Options::toggle(const Options::Option *option, int dir)
 {
     if (option == Option::INVERT_MOUSE) invertYMouse = !invertYMouse;
-    if (option == Option::RENDER_DISTANCE) viewDistance = (viewDistance + dir) & 3;
+//  if (option == Option::RENDER_DISTANCE) viewDistance = (viewDistance + dir) & 3;
     if (option == Option::GUI_SCALE) guiScale = (guiScale + dir) & 3;
 	if (option == Option::PARTICLES) particles = (particles + dir) % 3;
 
@@ -438,10 +438,10 @@ void Options::load()
                 if (cmds[0] == L"music") music = readFloat(cmds[1]);
                 if (cmds[0] == L"sound") sound = readFloat(cmds[1]);
                 if (cmds[0] == L"mouseSensitivity") sensitivity = readFloat(cmds[1]);
-				if (cmds[0] == L"fov") fov = readFloat(cmds[1]);
+//				if (cmds[0] == L"fov") fov = readFloat(cmds[1]);
 				if (cmds[0] == L"gamma") gamma = readFloat(cmds[1]);
                 if (cmds[0] == L"invertYMouse") invertYMouse = cmds[1]==L"true";
-                if (cmds[0] == L"viewDistance") viewDistance = _fromString<int>(cmds[1]);
+//              if (cmds[0] == L"viewDistance") viewDistance = _fromString<int>(cmds[1]);
                 if (cmds[0] == L"guiScale") guiScale =_fromString<int>(cmds[1]);
 				if (cmds[0] == L"particles") particles = _fromString<int>(cmds[1]);
                 if (cmds[0] == L"bobView") bobView = cmds[1]==L"true";

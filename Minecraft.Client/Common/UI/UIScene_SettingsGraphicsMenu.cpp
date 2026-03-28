@@ -66,17 +66,18 @@ UIScene_SettingsGraphicsMenu::UIScene_SettingsGraphicsMenu(int iPad, void *initD
 	
 	WCHAR TempString[256];
 
+#if 0
 	swprintf(TempString, 256, L"Render Distance: %d",app.GetGameSettings(m_iPad,eGameSetting_RenderDistance));	
 	m_sliderRenderDistance.init(TempString,eControl_RenderDistance,0,5,DistanceToLevel(app.GetGameSettings(m_iPad,eGameSetting_RenderDistance)));
-	
+#endif
 	swprintf( TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),app.GetGameSettings(m_iPad,eGameSetting_Gamma));	
 	m_sliderGamma.init(TempString,eControl_Gamma,0,100,app.GetGameSettings(m_iPad,eGameSetting_Gamma));
-
+#if 0
     const int initialFovSlider = app.GetGameSettings(m_iPad, eGameSetting_FOV);
 	const int initialFovDeg = sliderValueToFov(initialFovSlider);
 	swprintf(TempString, 256, L"FOV: %d", initialFovDeg);
 	m_sliderFOV.init(TempString, eControl_FOV, 0, FOV_SLIDER_MAX, initialFovSlider);
-	
+#endif
 	swprintf( TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_INTERFACEOPACITY ),app.GetGameSettings(m_iPad,eGameSetting_InterfaceOpacity));	
 	m_sliderInterfaceOpacity.init(TempString,eControl_InterfaceOpacity,0,100,app.GetGameSettings(m_iPad,eGameSetting_InterfaceOpacity));
 
@@ -191,6 +192,7 @@ void UIScene_SettingsGraphicsMenu::handleSliderMove(F64 sliderId, F64 currentVal
 	const int value = static_cast<int>(currentValue);
 	switch(static_cast<int>(sliderId))
 	{
+#if 0
 	case eControl_RenderDistance:
 		{
 			m_sliderRenderDistance.handleSliderMove(value);
@@ -205,7 +207,7 @@ void UIScene_SettingsGraphicsMenu::handleSliderMove(F64 sliderId, F64 currentVal
 			m_sliderRenderDistance.setLabel(TempString);
 		}
 		break;
-
+#endif
 	case eControl_Gamma:
 		m_sliderGamma.handleSliderMove(value);
 		
@@ -214,7 +216,7 @@ void UIScene_SettingsGraphicsMenu::handleSliderMove(F64 sliderId, F64 currentVal
 		m_sliderGamma.setLabel(TempString);
 
 		break;
-
+#if 0
 	case eControl_FOV:
 		{
 			m_sliderFOV.handleSliderMove(value);
@@ -226,7 +228,7 @@ void UIScene_SettingsGraphicsMenu::handleSliderMove(F64 sliderId, F64 currentVal
 			m_sliderFOV.setLabel(TempString);
 		}
 		break;
-
+#endif
 	case eControl_InterfaceOpacity:
 		m_sliderInterfaceOpacity.handleSliderMove(value);
 		
