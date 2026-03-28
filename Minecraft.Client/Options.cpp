@@ -168,7 +168,7 @@ void Options::init()
 	cameraSpeed = 1;
 	guiScale = 0;
 	particles = 0;
-	fov = 0;
+//	fov = 0;
 	gamma = 0;
 	advancedTooltips = false;
 }
@@ -233,7 +233,7 @@ void Options::set(const Options::Option *item, float fVal)
     }
 	if (item == Option::FOV)
 	{
-		fov = fVal;
+//		fov = fVal;
 	}
 	if (item == Option::GAMMA)
 	{
@@ -438,7 +438,7 @@ void Options::load()
                 if (cmds[0] == L"music") music = readFloat(cmds[1]);
                 if (cmds[0] == L"sound") sound = readFloat(cmds[1]);
                 if (cmds[0] == L"mouseSensitivity") sensitivity = readFloat(cmds[1]);
-				if (cmds[0] == L"fov") fov = readFloat(cmds[1]);
+//				if (cmds[0] == L"fov") fov = readFloat(cmds[1]);
 				if (cmds[0] == L"gamma") gamma = readFloat(cmds[1]);
                 if (cmds[0] == L"invertYMouse") invertYMouse = cmds[1]==L"true";
 //              if (cmds[0] == L"viewDistance") viewDistance = _fromString<int>(cmds[1]);

@@ -59,6 +59,7 @@ private:
 public:
     // Xbox 360 immutable fields
     static constexpr int viewDistance = 1;
+    static constexpr float fov = 0;
 
 	float music;
     float sound;
@@ -110,7 +111,6 @@ public:
     float cameraSpeed;
     int guiScale;
 	int particles; // 0 is all, 1 is decreased and 2 is minimal
-	float fov;
 	float gamma;
 	bool advancedTooltips;
 
