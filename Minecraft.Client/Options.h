@@ -57,11 +57,13 @@ private:
 	static const wstring PARTICLES[];
 
 public:
+    // Xbox 360 immutable fields
+    static constexpr int viewDistance = 1;
+
 	float music;
     float sound;
     float sensitivity;
     bool invertYMouse;
-    int viewDistance;
     bool bobView;
     bool anaglyph3d;
     bool advancedOpengl;
