@@ -5,11 +5,12 @@ on:
   push:
     branches:
     - 'main'
-    paths-ignore:
-      - '.gitignore'
-      - '*.md'
-      - '.github/**'
-      - '!.github/workflows/nightly.yml'
+    paths:
+      - '**'
+      - '!.gitignore'
+      - '!*.md'
+      - '!.github/**'
+      - '.github/workflows/nightly.yml'
 
 permissions:
   contents: write

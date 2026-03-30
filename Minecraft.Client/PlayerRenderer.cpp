@@ -519,6 +519,29 @@ void PlayerRenderer::renderHand()
 	{
 		humanoidModel->arm0->render(1 / 16.0f,true);
 	}
+
+
+	//Render custom skin boxes on viewmodel - Botch
+	vector<ModelPart*>* additionalModelParts = Minecraft::GetInstance()->player->GetAdditionalModelParts();
+	if (!additionalModelParts) return; //If there are no custom boxes, return. This fixes bug where the game will crash if you select a skin with no additional boxes.
+	vector<ModelPart*> armchildren = humanoidModel->arm0->children;
+	std::unordered_set<ModelPart*> additionalModelPartSet(additionalModelParts->begin(), additionalModelParts->end());
+	for (const auto& x : armchildren) {
+		if (x) {
+			if (additionalModelPartSet.find(x) != additionalModelPartSet.end()) { //This is to verify box is still actually on current skin - Botch
+				glPushMatrix();
+				//We need to transform to match offset of arm - Botch
+				glTranslatef(-5 * 0.0625f, 2 * 0.0625f, 0);
+				glRotatef(0.1 * (180.0f / PI), 0, 0, 1);
+				x->visible = true;
+				x->render(1.0f / 16.0f, true);
+				x->visible = false;
+				glPopMatrix();
+			}
+		}
+	}
+
+	
 }
 
 void PlayerRenderer::setupPosition(shared_ptr<LivingEntity> _mob, double x, double y, double z)
