@@ -2204,17 +2204,16 @@ void GameRenderer::setupFog(int i, float alpha)
 		}
 
 		glFogi(GL_FOG_MODE, GL_LINEAR);
-		glFogf(GL_FOG_START, distance * 0.25f);
-		glFogf(GL_FOG_END, distance);
+
 		if (i < 0)
 		{
 			glFogf(GL_FOG_START, 0);
-			glFogf(GL_FOG_END, distance * 0.8f);
+			glFogf(GL_FOG_END, distance * 2.2f);
 		}
 		else
 		{
-			glFogf(GL_FOG_START, distance * 0.25f);
-			glFogf(GL_FOG_END, distance);
+			glFogf(GL_FOG_START, distance * 0.8f);
+			glFogf(GL_FOG_END, distance * 2.2f);
 		}
 		/* 4J - removed - TODO investigate
 		if (GLContext.getCapabilities().GL_NV_fog_distance)
