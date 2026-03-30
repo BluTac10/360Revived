@@ -2099,6 +2099,9 @@ void GameRenderer::setupClearColor(float a)
 
 }
 
+static float start_multipler = 0.5;
+static float end_multiplier = 1;
+
 void GameRenderer::setupFog(int i, float alpha)
 {
 	shared_ptr<LivingEntity> player = mc->cameraTargetPlayer;
@@ -2224,8 +2227,8 @@ void GameRenderer::setupFog(int i, float alpha)
 
 		if (mc->level->dimension->isFoggyAt(static_cast<int>(player->x), static_cast<int>(player->z)))
 		{
-			glFogf(GL_FOG_START, distance * 0.05f);
-			glFogf(GL_FOG_END, min(distance, 16 * 16 * .75f) * .5f);
+			glFogf(GL_FOG_START, 0);
+			glFogf(GL_FOG_END, distance * 1.5f);
 		}
 	}
 
