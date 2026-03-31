@@ -2220,11 +2220,14 @@ void GameRenderer::setupFog(int i, float alpha)
 		// Not fully implemented by 4J - for now the end and nether are always foggy; the overworld is never foggy
 		if (mc->level->dimension->isFoggyAt(static_cast<int>(player->x), static_cast<int>(player->z)))
 		{
-			if (mc->level->dimension->id == HELL) {
+			if (mc->level->dimension->id == HELL)
+			{
 				// Nether fog
 				glFogf(GL_FOG_START, 0);
 				glFogf(GL_FOG_END, distance * 1.5f);
-			} else {
+			}
+			else
+			{
 				// End fog
 				glFogf(GL_FOG_START, distance * 0.4f);
 				glFogf(GL_FOG_END, distance * 0.6f);
