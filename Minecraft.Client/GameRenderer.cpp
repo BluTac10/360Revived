@@ -2102,6 +2102,7 @@ void GameRenderer::setupClearColor(float a)
 void GameRenderer::setupFog(int i, float alpha)
 {
 	shared_ptr<LivingEntity> player = mc->cameraTargetPlayer;
+    static constexpr signed int HELL = -1;
 
 	// 4J - check for creative mode brought forward from 1.2.3
 	bool creative = false;
@@ -2204,18 +2205,11 @@ void GameRenderer::setupFog(int i, float alpha)
 		}
 
 		glFogi(GL_FOG_MODE, GL_LINEAR);
-		glFogf(GL_FOG_START, distance * 0.25f);
-		glFogf(GL_FOG_END, distance);
-		if (i < 0)
-		{
-			glFogf(GL_FOG_START, 0);
-			glFogf(GL_FOG_END, distance * 0.8f);
-		}
-		else
-		{
-			glFogf(GL_FOG_START, distance * 0.25f);
-			glFogf(GL_FOG_END, distance);
-		}
+
+        // Overworld fog
+        glFogf(GL_FOG_START, distance * 0.75f);
+        glFogf(GL_FOG_END, distance * 2.2f);
+
 		/* 4J - removed - TODO investigate
 		if (GLContext.getCapabilities().GL_NV_fog_distance)
 		{
@@ -2225,8 +2219,18 @@ void GameRenderer::setupFog(int i, float alpha)
 
 		if (mc->level->dimension->isFoggyAt(static_cast<int>(player->x), static_cast<int>(player->z)))
 		{
-			glFogf(GL_FOG_START, distance * 0.05f);
-			glFogf(GL_FOG_END, min(distance, 16 * 16 * .75f) * .5f);
+            if (mc->level->dimension->id == -1)
+            {
+                // Nether fog
+                glFogf(GL_FOG_START, 0);
+                glFogf(GL_FOG_END, distance * 1.5f);
+            }
+            else
+            {
+                // End fog
+                glFogf(GL_FOG_START, distance * 0.4f);
+                glFogf(GL_FOG_END, distance * 0.6f);
+            }
 		}
 	}
 
