@@ -1,2 +1,0 @@
-cd C:\Users\Alex\Desktop\New360Revived
-%comspec% /k ""C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat" && cmake --preset windows64 && cmake --build --preset windows64-debug --target Minecraft.Client"
