@@ -34,7 +34,7 @@ int UIScene_CreateWorldMenu::m_iDifficultyTitleSettingA[4]=
 	IDS_DIFFICULTY_TITLE_HARD
 };
 
-UIScene_CreateWorldMenu::UIScene_CreateWorldMenu(int iPad, void *initData, UILayer *parentLayer) : IUIScene_StartGame(iPad, parentLayer)
+UIScene_CreateWorldMenu::UIScene_CreateWorldMenu(int iPad, void *initData, UILayer *parentLayer) : IUIScene_StartGame(iPad, parentLayer, eControl_TexturePackList)
 {
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();

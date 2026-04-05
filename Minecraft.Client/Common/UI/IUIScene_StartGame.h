@@ -25,19 +25,22 @@ protected:
 	LaunchMoreOptionsMenuInitData m_MoreOptionsParams;
 	bool m_bIgnoreInput;
 	
+	const int m_iTexturePackID;
 	int m_iTexturePacksNotInstalled;
 	unsigned int m_currentTexturePackIndex;
 	bool m_bShowTexturePackDescription;
 	bool m_texturePackDescDisplayed;
 	int m_iSetTexturePackDescription;
 
-	IUIScene_StartGame(int iPad, UILayer *parentLayer);
+	IUIScene_StartGame(int iPad, UILayer* parentLayer, int texturePackListID);
+	// This constructor should never be used!
+	//IUIScene_StartGame(int iPad, UILayer* parentLayer);
 
 	virtual void checkStateAndStartGame() = 0;
 	
 	virtual void handleSelectionChanged(F64 selectedId);
-
 	virtual void HandleDLCMountingComplete();
+	virtual void handleFocusChange(F64 controlId, F64 childId);
 
 	void UpdateTexturePackDescription(int index);
 	void UpdateCurrentTexturePack(int iSlot);

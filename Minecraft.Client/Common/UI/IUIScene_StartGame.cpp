@@ -5,17 +5,20 @@
 #include "Minecraft.h"
 #include "IUIScene_StartGame.h"
 
-IUIScene_StartGame::IUIScene_StartGame(int iPad, UILayer *parentLayer) : UIScene(iPad, parentLayer)
+IUIScene_StartGame::IUIScene_StartGame(int iPad, UILayer* parentLayer, int texturePackListID)
+	: UIScene(iPad, parentLayer), m_iTexturePackID(texturePackListID)
 {
 	m_bIgnoreInput = false;
-	m_iTexturePacksNotInstalled=0;
+	m_iTexturePacksNotInstalled = 0;
 	m_texturePackDescDisplayed = false;
 	m_bShowTexturePackDescription = false;
 	m_iSetTexturePackDescription = -1;
 
-	Minecraft *pMinecraft = Minecraft::GetInstance();
+	Minecraft* pMinecraft = Minecraft::GetInstance();
 	m_currentTexturePackIndex = pMinecraft->skins->getTexturePackIndex(0);
 }
+
+//IUIScene_StartGame::IUIScene_StartGame(int iPad, UILayer* parentLayer) : IUIScene_StartGame(iPad, parentLayer, -1) {}
 
 void IUIScene_StartGame::HandleDLCMountingComplete()
 {
@@ -128,6 +131,19 @@ void IUIScene_StartGame::handleSelectionChanged(F64 selectedId)
 	if(!m_texturePackDescDisplayed)
 	{	
 		m_bShowTexturePackDescription = true;
+	}
+}
+
+void IUIScene_StartGame::handleFocusChange(F64 controlId, F64 childId)
+{
+	if (static_cast<int>(controlId) == m_iTexturePackID) {
+		if (m_bShowTexturePackDescription) return;
+//		m_iSetTexturePackDescription = 0;
+
+		if (!m_texturePackDescDisplayed)
+		{
+			m_bShowTexturePackDescription = true;
+		}
 	}
 }
 
