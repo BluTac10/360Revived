@@ -4,12 +4,10 @@ on:
   workflow_dispatch: 
   pull_request:
     types: [opened, reopened, synchronize]
-    paths:
-      - '**'
-      - '!.gitignore'
-      - '!*.md'
-      - '!.github/**'
-      - '.github/workflows/pull-request.yml'
+    paths-ignore:
+      - '.gitignore'
+      - '*.md'
+      - '.github/*.md'
 
 jobs:
   build:

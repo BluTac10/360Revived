@@ -67,21 +67,8 @@ bool PortalTile::isCubeShaped()
 	return false;
 }
 
-bool PortalTile::trySpawnPortal(Level *level, int x, int y, int z, bool actuallySpawn)
+bool PortalTile::validPortalFrame(Level* level, int x, int y, int z, int xd, int zd, bool actuallySpawn)
 {
-	int xd = 0;
-	int zd = 0;
-	if (level->getTile(x - 1, y, z) == Tile::obsidian_Id || level->getTile(x + 1, y, z) == Tile::obsidian_Id) xd = 1;
-	if (level->getTile(x, y, z - 1) == Tile::obsidian_Id || level->getTile(x, y, z + 1) == Tile::obsidian_Id) zd = 1;
-
-	if (xd == zd) return false;
-
-	if (level->getTile(x - xd, y, z - zd) == 0)
-	{
-		x -= xd;
-		z -= zd;
-	}
-
 	for (int xx = -1; xx <= 2; xx++)
 	{
 		for (int yy = -1; yy <= 3; yy++)
@@ -101,9 +88,7 @@ bool PortalTile::trySpawnPortal(Level *level, int x, int y, int z, bool actually
 			}
 		}
 	}
-
-	if( !actuallySpawn )
-		return true;
+	if (!actuallySpawn) return true;
 
 	for (int xx = 0; xx < 2; xx++)
 	{
@@ -112,9 +97,52 @@ bool PortalTile::trySpawnPortal(Level *level, int x, int y, int z, bool actually
 			level->setTileAndData(x + xd * xx, y + yy, z + zd * xx, Tile::portalTile_Id, 0, Tile::UPDATE_CLIENTS);
 		}
 	}
-
+		
 	return true;
+}
 
+bool PortalTile::trySpawnPortal(Level *level, int x, int y, int z, bool actuallySpawn)
+{
+	int xd = 0;
+	int zd = 0;
+	if (level->getTile(x - 1, y, z) == Tile::obsidian_Id || level->getTile(x + 1, y, z) == Tile::obsidian_Id) xd = 1;
+	if (level->getTile(x, y, z - 1) == Tile::obsidian_Id || level->getTile(x, y, z + 1) == Tile::obsidian_Id) zd = 1;
+
+	bool twoPosible = false; // two neth portals posible (x and z direction)
+	if (xd == zd)
+	{
+		if (xd == 1) twoPosible = true;
+		else return false;
+	}
+
+	bool changedx = false; // changed x so it can be reverted if two portals are posible
+	if (level->getTile(x - xd, y, z) == 0)
+	{
+		changedx = true;
+		x--;
+	}
+	else if (level->getTile(x, y, z - zd) == 0 && !twoPosible)
+	{
+		z--;
+	}
+
+	if (!twoPosible)
+	{
+		if (!validPortalFrame(level, x, y, z, xd, zd, actuallySpawn)) return false;
+	}
+	else
+	{
+		if (!validPortalFrame(level, x, y, z, xd, 0, actuallySpawn))
+		{
+			if (changedx) x++; // revert x (this check wants to check z not x and z)
+
+			if (level->getTile(x, y, z - zd) == 0) z--;
+
+			if (!validPortalFrame(level, x, y, z, 0, zd, actuallySpawn))
+				return false;
+		}
+	}
+	return true;
 }
 
 void PortalTile::neighborChanged(Level *level, int x, int y, int z, int type)
