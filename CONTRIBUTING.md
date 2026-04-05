@@ -1,6 +1,9 @@
 # Scope of Project
 At the moment, this project's scope is generally limited outside of adding new content to the game (blocks, mobs, items). We are currently prioritizing stability, quality of life, and platform support over these things.
 
+## Backporting
+If you're backporting a feature, please read [BACKPORTING.md](./BACKPORTING.md)
+
 ## Parity
 We are attempting to keep our version of LCE as close to visual and experience parity with the original console experience of LCE as possible. This means that we will not be accepting changes that...
 - Backport things from Java Edition that did not ever exist in LCE

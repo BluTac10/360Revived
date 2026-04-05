@@ -20,6 +20,10 @@ void WitherBossRenderer::render(shared_ptr<Entity> entity, double x, double y, d
 	shared_ptr<WitherBoss> mob = dynamic_pointer_cast<WitherBoss>(entity);
 
 	BossMobGuiInfo::setBossHealth(mob, true);
+    if (!mob->getCustomName().empty())
+	{
+        BossMobGuiInfo::name = mob->getCustomName();
+	}
 
 	int modelVersion = dynamic_cast<WitherBossModel*>(model)->modelVersion();
 	if (modelVersion != this->modelVersion)

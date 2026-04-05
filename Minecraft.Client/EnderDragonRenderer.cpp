@@ -89,6 +89,11 @@ void EnderDragonRenderer::render(shared_ptr<Entity> _mob, double x, double y, do
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
 	shared_ptr<EnderDragon> mob = dynamic_pointer_cast<EnderDragon>(_mob);
 	BossMobGuiInfo::setBossHealth(mob, false);
+    if (!mob->getCustomName().empty())
+    {
+        BossMobGuiInfo::name = mob->getCustomName();
+    }
+
 	MobRenderer::render(mob, x, y, z, rot, a);
 	if (mob->nearestCrystal != nullptr)
 	{
