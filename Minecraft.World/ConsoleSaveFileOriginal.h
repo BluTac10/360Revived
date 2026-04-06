@@ -77,6 +77,11 @@ public:
 	virtual void LockSaveAccess();
 	virtual void ReleaseSaveAccess();
 
+#ifdef MINECRAFT_SERVER_BUILD
+	static void flushPendingBackgroundSave();
+	static bool hasPendingBackgroundSave();
+#endif
+
 	virtual ESavePlatform getSavePlatform();
 	virtual bool isSaveEndianDifferent();
 	virtual void setLocalPlatform();

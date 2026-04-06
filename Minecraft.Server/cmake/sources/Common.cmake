@@ -494,6 +494,8 @@ set(_MINECRAFT_SERVER_COMMON_ROOT
   "${CMAKE_CURRENT_SOURCE_DIR}/../Minecraft.Client/iob_shim.asm"
   "${CMAKE_CURRENT_SOURCE_DIR}/../Minecraft.Client/stdafx.cpp"
   "${CMAKE_CURRENT_SOURCE_DIR}/../Minecraft.Client/stubs.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../Minecraft.World/ConsoleSaveFileOriginal.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../Minecraft.World/ConsoleSaveFileOriginal.h"
   "${CMAKE_CURRENT_SOURCE_DIR}/../include/lce_filesystem/lce_filesystem.cpp"
   "${CMAKE_CURRENT_SOURCE_DIR}/Console/ServerCliInput.cpp"
   "${CMAKE_CURRENT_SOURCE_DIR}/Console/ServerCliInput.h"

@@ -472,6 +472,8 @@ IDXGISwapChain*         g_pSwapChain = nullptr;
 ID3D11RenderTargetView* g_pRenderTargetView = nullptr;
 ID3D11DepthStencilView* g_pDepthStencilView = nullptr;
 ID3D11Texture2D*		g_pDepthStencilBuffer = nullptr;
+static const float kClearColorWhite[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+static const float kClearColorBlack[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 //
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
@@ -663,7 +665,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	default:
-		return DefWindowProc(hWnd, message, wParam, lParam);
+		return DefWindowProcW(hWnd, message, wParam, lParam);
 	}
 	return 0;
 }
@@ -675,23 +677,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 //
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
-	WNDCLASSEX wcex;
+	WNDCLASSEXW wcex;
 
-	wcex.cbSize = sizeof(WNDCLASSEX);
+	wcex.cbSize = sizeof(WNDCLASSEXW);
 
 	wcex.style			= CS_HREDRAW | CS_VREDRAW;
 	wcex.lpfnWndProc	= WndProc;
 	wcex.cbClsExtra		= 0;
 	wcex.cbWndExtra		= 0;
 	wcex.hInstance		= hInstance;
-	wcex.hIcon			= LoadIcon(hInstance, "Minecraft");
+	wcex.hIcon			= LoadIconW(hInstance, L"Minecraft");
 	wcex.hCursor		= LoadCursor(nullptr, IDC_ARROW);
 	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
-	wcex.lpszMenuName	= "Minecraft";
-	wcex.lpszClassName	= "MinecraftClass";
+	wcex.lpszMenuName	= L"Minecraft";
+	wcex.lpszClassName	= L"MinecraftClass";
 	wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_MINECRAFTWINDOWS));
 
-	return RegisterClassEx(&wcex);
+	return RegisterClassExW(&wcex);
 }
 
 //
@@ -711,8 +713,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	RECT wr = {0, 0, g_rScreenWidth, g_rScreenHeight};    // set the size, but not the position
 	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, FALSE);    // adjust the size
 
-	g_hWnd = CreateWindow(	"MinecraftClass",
-		"Minecraft",
+	g_hWnd = CreateWindowW(	L"MinecraftClass",
+		L"Minecraft",
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT,
 		0,
@@ -1564,7 +1566,14 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 			continue;
 		}
 
+		const float* clearColor = app.GetGameStarted() ? kClearColorBlack : kClearColorWhite;
+		RenderManager.SetClearColour(clearColor);
 		RenderManager.StartFrame();
+		if (!app.GetGameStarted())
+		{
+			RenderManager.SetClearColour(kClearColorWhite); // set intro scene background to white
+			RenderManager.Clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		}
 #if 0
 		if(pMinecraft->soundEngine->isStreamingWavebankReady() &&
 			!pMinecraft->soundEngine->isPlayingStreamingGameMusic() &&

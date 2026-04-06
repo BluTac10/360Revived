@@ -28,6 +28,7 @@
 #include "../../Minecraft.World/TilePos.h"
 #include "../../Minecraft.World/compression.h"
 #include "../../Minecraft.World/OldChunkStorage.h"
+#include "../../Minecraft.World/ConsoleSaveFileOriginal.h"
 #include "../../Minecraft.World/net.minecraft.world.level.tile.h"
 #include "../../Minecraft.World/Random.h"
 
@@ -325,6 +326,7 @@ static void TickCoreSystems()
 	g_NetworkManager.DoWork();
 	ProfileManager.Tick();
 	StorageManager.Tick();
+    ConsoleSaveFileOriginal::flushPendingBackgroundSave();
 }
 
 /**
@@ -655,7 +657,7 @@ int main(int argc, char **argv)
 			break;
 		}
 
-		if (autosaveRequested && app.GetXuiServerAction(kServerActionPad) == eXuiServerAction_Idle)
+		if (autosaveRequested && app.GetXuiServerAction(kServerActionPad) == eXuiServerAction_Idle && !ConsoleSaveFileOriginal::hasPendingBackgroundSave())
 		{
 			LogWorldIO("autosave completed");
 			autosaveRequested = false;
@@ -669,7 +671,7 @@ int main(int argc, char **argv)
 		DWORD now = GetTickCount();
 		if ((LONG)(now - nextAutosaveTick) >= 0)
 		{
-			if (app.GetXuiServerAction(kServerActionPad) == eXuiServerAction_Idle)
+            if (app.GetXuiServerAction(kServerActionPad) == eXuiServerAction_Idle && !ConsoleSaveFileOriginal::hasPendingBackgroundSave())
 			{
 				LogWorldIO("requesting autosave");
 				app.SetXuiServerAction(kServerActionPad, eXuiServerAction_AutoSaveGame);
@@ -685,14 +687,16 @@ int main(int argc, char **argv)
 
 	LogInfof("shutdown", "Dedicated server stopped");
 	MinecraftServer *server = MinecraftServer::getInstance();
-	if (server != NULL)
+    if (server != NULL && !ConsoleSaveFileOriginal::hasPendingBackgroundSave())
 	{
-		server->setSaveOnExit(true);
-	}
-	if (server != NULL)
-	{
+        server->setSaveOnExit(true);
 		LogWorldIO("requesting save before shutdown");
 		LogWorldIO("using saveOnExit for shutdown");
+	}
+
+	if (ConsoleSaveFileOriginal::hasPendingBackgroundSave())
+    {
+        LogWorldIO("Waiting for autosave to complete...");
 	}
 
 	MinecraftServer::HaltServer();
@@ -701,7 +705,18 @@ int main(int argc, char **argv)
 	{
 		C4JThread waitThread(&WaitForServerStoppedThreadProc, NULL, "WaitServerStopped");
 		waitThread.Run();
+		while (waitThread.isRunning())
+		{
+			TickCoreSystems();
+			Sleep(10);
+		}
 		waitThread.WaitForCompletion(INFINITE);
+	}
+
+	while (ConsoleSaveFileOriginal::hasPendingBackgroundSave())
+	{
+		TickCoreSystems();
+		Sleep(10);
 	}
 
 	LogInfof("shutdown", "Cleaning up and exiting.");
