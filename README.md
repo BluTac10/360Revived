@@ -75,10 +75,11 @@ Would you like to contribute to this project? Please read our [Contributor's Gui
 |--------------------|-----------------------------------------------------------------------------------------------------|
 | `-name <username>` | Overrides your in-game username.                                                                    |
 | `-fullscreen`      | Launches the game in Fullscreen mode                                                                |
+| `-fov <fov>`       | Sets a custom FOV in the range (70-110)                                                             |
 
 Example:
 ```
-Minecraft.Client.exe -name Steve -fullscreen
+Minecraft.Client.exe -name Steve -fullscreen -fov 70
 ```
 
 ## LAN Multiplayer

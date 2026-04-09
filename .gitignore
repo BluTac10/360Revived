@@ -17,9 +17,6 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
-#clion annoying
-.idea
-
 # Mono auto generated files
 mono_crash.*
 
