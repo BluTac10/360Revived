@@ -233,7 +233,7 @@ void Options::set(const Options::Option *item, float fVal)
     }
 	if (item == Option::FOV)
 	{
-//		fov = fVal;
+		fov = fVal;
 	}
 	if (item == Option::GAMMA)
 	{
@@ -241,7 +241,7 @@ void Options::set(const Options::Option *item, float fVal)
 	}
 	if (item == Option::RENDER_DISTANCE)
 	{
-//		viewDistance = fVal;
+		viewDistance = fVal;
 	}
 }
 

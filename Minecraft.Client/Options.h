@@ -57,9 +57,9 @@ private:
 	static const wstring PARTICLES[];
 
 public:
-    // Xbox 360 immutable fields
-    static constexpr int viewDistance = 1;
-    static constexpr float fov = 0;
+    // Xbox 360 defaults
+    int viewDistance = 1;
+    float fov = 0.0f;
 
 	float music;
     float sound;

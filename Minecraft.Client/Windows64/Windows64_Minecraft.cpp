@@ -50,6 +50,9 @@
 #include "Windows64_Xuid.h"
 #include "Common/UI/UI.h"
 
+#include <future>
+#include <optional>
+
 // Forward-declare the internal Renderer class and its global instance from 4J_Render_PC_d.lib.
 // C4JRender (RenderManager) is a stateless wrapper — all D3D state lives in InternalRenderManager.
 class Renderer;
@@ -120,11 +123,29 @@ wchar_t g_Win64UsernameW[17] = { 0 };
 static bool g_isFullscreen = false;
 static WINDOWPLACEMENT g_wpPrev = { sizeof(g_wpPrev) };
 
-struct Win64LaunchOptions
+// Render Constants
+constexpr static int VALID_RENDER_DISTANCES[] = {2, 4, 8, 16, 32, 64};
+constexpr static int RENDER_DISTANCE_MIN = 2;
+constexpr static int RENDER_DISTANCE_MAX = 64;
+constexpr static int FOV_SLIDER_MAX = 110;
+constexpr static int FOV_MIN = 70;
+constexpr static int FOV_MAX = 110;
+constexpr static int DEFAULT_FOV = 70;
+constexpr static int DEFAULT_RENDER_DISTANCE = 8;
+
+typedef struct _Win64Options
 {
-	int screenMode;
-	bool fullscreen;
-};
+	uint16_t screenMode;
+    std::optional<uint8_t> fov;
+    std::optional<uint8_t> renderDistance;
+    std::optional<bool> fullscreen;
+
+     bool modified() const
+    {
+        return screenMode != 0 || fov.has_value() || renderDistance.has_value() || fullscreen.has_value();
+    }
+} Win64Options, *PWin64Options;
+Win64Options savedOptions = Win64Options{0};
 
 static void CopyWideArgToAnsi(LPCWSTR source, char* dest, size_t destSize)
 {
@@ -148,38 +169,97 @@ static void GetOptionsFilePath(char *out, size_t outSize)
 	strncat_s(out, outSize, "options.txt", _TRUNCATE);
 }
 
-static void SaveFullscreenOption(bool fullscreen)
+static Win64Options LoadOptions()
 {
-	char path[MAX_PATH];
-	GetOptionsFilePath(path, sizeof(path));
-	FILE *f = nullptr;
-	if (fopen_s(&f, path, "w") == 0 && f)
-	{
-		fprintf(f, "fullscreen=%d\n", fullscreen ? 1 : 0);
-		fclose(f);
-	}
+    Win64Options options = {0};
+    char path[MAX_PATH];
+    GetOptionsFilePath(path, sizeof(path));
+    FILE *f = nullptr;
+
+    if (fopen_s(&f, path, "r") == 0 && f)
+    {
+        char line[256];
+        while (fgets(line, sizeof(line), f))
+        {
+            int val = 0;
+
+            if (sscanf_s(line, "fullscreen=%d", &val) == 1)
+            {
+                options.fullscreen = val != 0;
+            }
+
+            if (sscanf_s(line, "fov=%d", &val) == 1
+                && val >= FOV_MIN && val <= FOV_MAX)
+            {
+                options.fov = static_cast<uint8_t>(val);
+            }
+
+            if (sscanf_s(line, "renderDistance=%d", &val) == 1
+                && val >= RENDER_DISTANCE_MIN && val <= RENDER_DISTANCE_MAX)
+            {
+                options.renderDistance = static_cast<uint8_t>(val);
+            }
+        }
+        fclose(f);
+    }
+
+    return options;
 }
 
-static bool LoadFullscreenOption()
+static void SaveAllOptions(const Win64Options options)
 {
-	char path[MAX_PATH];
-	GetOptionsFilePath(path, sizeof(path));
-	FILE *f = nullptr;
-	if (fopen_s(&f, path, "r") == 0 && f)
-	{
-		char line[256];
-		while (fgets(line, sizeof(line), f))
-		{
-			int val = 0;
-			if (sscanf_s(line, "fullscreen=%d", &val) == 1)
-			{
-				fclose(f);
-				return val != 0;
-			}
-		}
-		fclose(f);
-	}
-	return false;
+    bool flagUpdate = false;
+
+    if (options.renderDistance.has_value() && options.renderDistance != savedOptions.renderDistance)
+    {
+        savedOptions.renderDistance = options.renderDistance;
+        flagUpdate = true;
+    }
+
+    if (options.fullscreen.has_value() && options.fullscreen != savedOptions.fullscreen)
+    {
+        savedOptions.fullscreen = options.fullscreen;
+        flagUpdate = true;
+    }
+
+    if (options.fov.has_value() && options.fov != savedOptions.fov)
+    {
+        savedOptions.fov = options.fov;
+        flagUpdate = true;
+    }
+
+    if (flagUpdate)
+    {
+        char path[MAX_PATH];
+        GetOptionsFilePath(path, sizeof(path));
+        FILE *f = nullptr;
+
+        if (fopen_s(&f, path, "w") == 0 && f)
+        {
+            fprintf(f, "renderDistance=%d\n", savedOptions.renderDistance.value_or(DEFAULT_RENDER_DISTANCE));
+            fprintf(f, "fov=%d\n", savedOptions.fov.value_or(DEFAULT_FOV));
+            fprintf(f, "fullscreen=%d\n", savedOptions.fullscreen.value_or(false));
+            fclose(f);
+        }
+    }
+}
+
+static void SaveFullscreenOption(const bool fullscreen)
+{
+    char path[MAX_PATH];
+    GetOptionsFilePath(path, sizeof(path));
+    if (GetFileAttributesA(path) != INVALID_FILE_ATTRIBUTES) {
+        SaveAllOptions(Win64Options{savedOptions.screenMode, savedOptions.fov, savedOptions.renderDistance, fullscreen});
+    }
+}
+
+int FovToSliderValue(const float fov)
+{
+    int clampedFov = static_cast<int>(fov + 0.5f);
+    if (clampedFov < FOV_MIN) clampedFov = FOV_MIN;
+    if (clampedFov > FOV_MAX) clampedFov = FOV_MAX;
+
+    return ((clampedFov - FOV_MIN) * FOV_SLIDER_MAX) / (FOV_MAX - FOV_MIN);
 }
 // ------------------------------------------------------------------
 
@@ -204,10 +284,9 @@ static void ApplyScreenMode(int screenMode)
 	}
 }
 
-static Win64LaunchOptions ParseLaunchOptions()
+static Win64Options ParseLaunchOptions()
 {
-	Win64LaunchOptions options = {};
-	options.screenMode = 0;
+	Win64Options options = Win64Options{0};
 
 	g_Win64MultiplayerJoin = false;
 	g_Win64MultiplayerPort = WIN64_NET_DEFAULT_PORT;
@@ -245,8 +324,28 @@ static Win64LaunchOptions ParseLaunchOptions()
 				g_Win64MultiplayerPort = static_cast<int>(port);
 			}
 		}
+		else if (_wcsicmp(argv[i], L"-renderDistance") == 0 && (i + 1) < argc) {
+		    wchar_t* endPtr = nullptr;
+		    const long renderDistance = wcstol(argv[++i], &endPtr, 10);
+
+		    if (endPtr != argv[i] && *endPtr == 0 && renderDistance >= RENDER_DISTANCE_MIN && renderDistance <= RENDER_DISTANCE_MAX)
+		    {
+		        options.renderDistance = static_cast<uint8_t>(renderDistance);
+		    }
+		}
+		else if (_wcsicmp(argv[i], L"-fov") == 0 && (i + 1) < argc) {
+		    wchar_t* endPtr = nullptr;
+		    const long fov = wcstol(argv[++i], &endPtr, 10);
+
+		    if (endPtr != argv[i] && *endPtr == 0 && fov >= FOV_MIN && fov <= FOV_MAX)
+		    {
+		        options.fov = static_cast<uint8_t>(fov);
+		    }
+		}
 		else if (_wcsicmp(argv[i], L"-fullscreen") == 0)
-			options.fullscreen = true;
+		{
+		    options.fullscreen = true;
+		}
 	}
 
 	LocalFree(argv);
@@ -1356,7 +1455,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
     }
 
 	// Load stuff from launch options, including username
-	const Win64LaunchOptions launchOptions = ParseLaunchOptions();
+    const Win64Options launchOptions = ParseLaunchOptions();
 	ApplyScreenMode(launchOptions.screenMode);
 
 	// Ensure uid.dat exists from startup (before any multiplayer/login path).
@@ -1453,13 +1552,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		CleanupDevice();
 		return 0;
 	}
-
-	// Restore fullscreen state from previous session
-	if (LoadFullscreenOption() && !g_isFullscreen || launchOptions.fullscreen)
-	{
-		ToggleFullscreen();
-	}
-
 #if 0
 	// Main message loop
 	MSG msg = {0};
@@ -1523,6 +1615,44 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	//app.TemporaryCreateGameStart();
 
 	//Sleep(10000);
+
+    // Restore previous properties
+    savedOptions = LoadOptions();
+
+    if (launchOptions.modified())
+    {
+        SaveAllOptions(launchOptions);
+    }
+
+    if (savedOptions.modified())
+    {
+        if (savedOptions.fullscreen.value_or(false) && !g_isFullscreen)
+        {
+            ToggleFullscreen();
+        }
+
+        if (savedOptions.renderDistance.has_value())
+        {
+#if 0
+            for (size_t i = 0; i < std::size(VALID_RENDER_DISTANCES); i++)
+            {
+                if (VALID_RENDER_DISTANCES[i] != savedOptions.renderDistance.value())
+                {
+                    continue;
+                }
+
+                pMinecraft->options->viewDistance = static_cast<int>(3 - i);
+                app.SetGameSettings(ProfileManager.GetPrimaryPad(), eGameSetting_RenderDistance, savedOptions.renderDistance.value());
+            }
+#endif
+        }
+
+        if (savedOptions.fov.has_value())
+        {
+            pMinecraft->gameRenderer->SetFovVal(savedOptions.fov.value());
+            app.SetGameSettings(ProfileManager.GetPrimaryPad(), eGameSetting_FOV, FovToSliderValue(savedOptions.fov.value()));
+        }
+    }
 #if 0
 	// Intro loop ?
 	while(app.IntroRunning())
