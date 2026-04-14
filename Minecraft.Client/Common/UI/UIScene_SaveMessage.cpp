@@ -7,7 +7,7 @@
 
 UIScene_SaveMessage::UIScene_SaveMessage(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {
-	constexpr static wchar_t localeBypassedText[] = L"This game has a level autosave feature. When you see the icon above displayed, the game is saving your data. \nPlease do not turn off your Xbox 360 console while this icon is on-screen.";
+	constexpr static wchar_t localeBypassedText[] = L"This game has a level autosave feature. When you see the icon above displayed, the game is saving your data. \nPlease do not turn off your Xbox 360 console while this icon is on-screen.\n\n";
 
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
