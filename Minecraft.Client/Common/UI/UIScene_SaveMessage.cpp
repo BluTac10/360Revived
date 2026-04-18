@@ -7,8 +7,6 @@
 
 UIScene_SaveMessage::UIScene_SaveMessage(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {
-	constexpr static wchar_t localeBypassedText[] = L"This game has a level autosave feature. When you see the icon above displayed, the game is saving your data. \nPlease do not turn off your Xbox 360 console while this icon is on-screen.";
-
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
@@ -16,9 +14,7 @@ UIScene_SaveMessage::UIScene_SaveMessage(int iPad, void *initData, UILayer *pare
 	parentLayer->addComponent(iPad,eUIComponent_Logo);
 
 	m_buttonConfirm.init(app.GetString(IDS_CONFIRM_OK),eControl_Confirm);
-	// TODO: Reverse localization file format and pull from localized message ID
-	//m_labelDescription.init(app.GetString(IDS_SAVE_ICON_MESSAGE));
-	m_labelDescription.init(localeBypassedText);
+	m_labelDescription.init(app.GetString(IDS_SAVE_ICON_MESSAGE));
 
 	IggyDataValue result;
 
