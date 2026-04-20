@@ -4,7 +4,7 @@
 
 [![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/T9CCMGx9ff)
 
-This project is based on source code of [smartcmd/MinecraftConsoles](https://github.com/smartcmd/MinecraftConsoles). 
+This project is based on source code of [MCLCE/MinecraftConsoles](https://github.com/MCLCE/MinecraftConsoles). 
 
 The current goal of 360Revived is to be a pc port of Xbox 360 Edition TU19. 
 
